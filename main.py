@@ -69,5 +69,5 @@ while wars.game:
         window.blit(wars.boll, (450, 250))
         player_1.draw()
         player_2.draw()
-#sfsdcs
+#sfsdcssfeef
     display.update()
