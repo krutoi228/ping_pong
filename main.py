@@ -24,20 +24,20 @@ play_rect.y = 250
 
 # Класс игроков
 class PLayr():
-    def __init__(self, x_player, y_player, images, speed, width, height):
-        self.y_player = y_player
+    def __init__(self, x_player, y_player, images, width, height):
+        self.y_player = wars.y1
         self.x_player = x_player
         self.width = width
         self.height = height
         self.image = images
-        self.speed = speed
         self.playres = transform.scale(image.load(images), (self.width, self.height))
     
     def draw(self):
         window.blit(self.playres, (self.x_player, self.y_player))
 
-player_1 = PLayr(50, 250, 'player_1.svg', 5,  21, 120)
-player_2 = PLayr(850, 250, 'player_2.svg', 5,  21, 120)
+
+player_1 = PLayr(50, wars.y1, 'player_1.svg', 21, 120)
+player_2 = PLayr(850, wars.y2, 'player_2.svg', 21, 120)
 
 
 # Игровой цикл
@@ -52,6 +52,9 @@ while wars.game:
 
         elif keys_pressed[K_ESCAPE]:
             wars.game = False
+
+        elif keys_pressed[K_w]:
+            wars.y1 = wars.y1 - 3
         
         elif e.type == pg.MOUSEBUTTONDOWN:
             if e.button == pg.BUTTON_LEFT:

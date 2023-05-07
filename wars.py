@@ -16,8 +16,9 @@ game = True
 begin = True
 play_game = False
 
-
 # Переменные int
+y1 = 250
+y2 = 250
 
 # Картинки
 boll = transform.scale(image.load('boll.svg'), (30, 30))
