@@ -17,14 +17,11 @@ begin = True
 play_game = False
 
 # Переменные int
-y1 = 250
-y2 = 250
+vector_y = -3
+vector_x = -3
 
-# Картинки
-boll = transform.scale(image.load('boll.svg'), (30, 30))
-
-player_1 = transform.scale(image.load('player_1.svg'), (21, 120))
-player_2 = transform.scale(image.load('player_2.svg'), (21, 120))
+x = 50 
+y = 250
 
 # Надписи
 _play = font.render(
