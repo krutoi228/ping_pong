@@ -10,6 +10,7 @@ font = font.Font(None, 70)
 fon = (156, 187, 255)
 red = (255, 0, 0)
 paint = (239, 241, 251)
+ping = (255, 169, 188)
 
 # Переменные с True False
 game = True
@@ -25,5 +26,7 @@ y = 250
 
 # Надписи
 _play = font.render(
-    'PLAY', 1, paint
+    'ИГРАТЬ', 1, paint
 )
+
+_check = pg.font.SysFont('verbana', 50).render('Счет:', True, paint)

@@ -10,7 +10,7 @@ import wars
 pg.init()
 
 # Окно
-window = pg.display.set_mode((900, 600))
+window = display.set_mode((900, 600))
 
 # Таймер
 clock = pg.time.Clock()
@@ -22,8 +22,9 @@ play_rect.x = 400
 play_rect.y = 250
 
 # Класс игроков
-class PLayr():
+class PLayr(sprite.Sprite):
     def __init__(self, x_player, y_player, images, width, height):
+        super().__init__()
         self.width = width
         self.height = height
         self.images = images
@@ -56,41 +57,54 @@ class PLayr():
             self.rect.y += 8
 
 # Класс мяч
-class Boll():
+class Boll(sprite.Sprite):
     def __init__(self, x_boll, y_boll, images, width, height):
+        super().__init__()
         self.x_boll = x_boll
         self.y_boll = y_boll
-        self.images = images
         self.width = width
         self.height = height
+        self.images = images
         self.boll = transform.scale(image.load(self.images), (width, height))
+        self.rect = self.boll.get_rect()
+        self.rect.x = x_boll
+        self.rect.y = y_boll
     
     def draw(self):
-        window.blit(self.boll, (self.x_boll, self.y_boll))
-    
-    def vector_boll(self, vectorX, vectorY):
-        self.y_boll += vectorY
-        self.x_boll += vectorX
+        window.blit(self.boll, (self.rect.x, self.rect.y))
 
-        if self.y_boll <= 0:
+    def update(self):
+        self.rect.y += wars.vector_y
+        self.rect.x += wars.vector_x
+
+        if self.rect.y <= 0:
             wars.vector_y = 3
 
-        if self.y_boll >= 570:
+        if self.rect.y >= 570:
             wars.vector_y = -3
 
-        if self.x_boll <= 0:
+        if self.rect.x <= 0:
             wars.vector_x = 3
         
-        if self.x_boll >= 870:
+        if self.rect.x >= 870:
             wars.vector_x = -3
 
-        if self.x_boll == wars.x and self.y_boll == wars.y:
+        if self.rect.x == wars.x and self.rect.y == wars.y:
             wars.vector_x = 3
+
+playres = sprite.Group()
+playres2 = sprite.Group()
+bolls = sprite.Group()
 
 player_1 = PLayr(50, 250, 'player_1.svg', 21, 120)
 player_2 = PLayr(850, 250, 'player_2.svg', 21, 120)
 
+playres.add(player_1)
+playres2.add(player_2)
+
 boll = Boll(450, 250, 'boll.svg', 30, 30)
+
+bolls.add(boll)
 
 # Игровой цикл
 while wars.game:
@@ -115,6 +129,14 @@ while wars.game:
         window.blit(play, (play_rect.x, play_rect.y))
 
     if wars.play_game == True:
+        if sprite.groupcollide(bolls, playres, False, False):
+            wars.vector_x = 3
+
+        if sprite.groupcollide(bolls, playres2, False, False):
+            wars.vector_x = -3
+
+        window.blit(wars._check, (0, 8))
+
         player_1.draw()
         player_1.vector_p1()
 
@@ -122,7 +144,7 @@ while wars.game:
         player_2.vector_p2()
 
         boll.draw()
-        boll.vector_boll(wars.vector_x, wars.vector_y)
+        bolls.update()
 
     clock.tick(60)
     display.update()
