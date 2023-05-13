@@ -151,7 +151,6 @@ while wars.game:
                     wars.play_game = True
                     ch_goal1 = 0
                     ch_goal2 = 0
-                    print('sdf')
     
     if wars.begin == True:
         window.blit(play, (play_rect.x, play_rect.y))
