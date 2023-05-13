@@ -15,11 +15,20 @@ window = display.set_mode((900, 600))
 # Таймер
 clock = pg.time.Clock()
 
-# Кнопка play
-play = transform.scale(wars._play, (100, 50))
+# Кнопка играть
+play = transform.scale(wars._play, (120, 50))
 play_rect = play.get_rect()
 play_rect.x = 400
 play_rect.y = 250
+
+# Кнопка заново
+reset = transform.scale(wars._reset, (100, 30))
+reset_rect = reset.get_rect()
+reset_rect.x = 380
+reset_rect.y = 250
+
+ch_goal1 = 0
+ch_goal2 = 0
 
 # Класс игроков
 class PLayr(sprite.Sprite):
@@ -74,6 +83,8 @@ class Boll(sprite.Sprite):
         window.blit(self.boll, (self.rect.x, self.rect.y))
 
     def update(self):
+        global ch_goal1, ch_goal2
+
         self.rect.y += wars.vector_y
         self.rect.x += wars.vector_x
 
@@ -85,19 +96,22 @@ class Boll(sprite.Sprite):
 
         if self.rect.x <= 0:
             wars.vector_x = 3
+            self.rect.y = 250
+            self.rect.x = 450
+            ch_goal2 += 1
         
         if self.rect.x >= 870:
             wars.vector_x = -3
-
-        if self.rect.x == wars.x and self.rect.y == wars.y:
-            wars.vector_x = 3
+            self.rect.y = 250
+            self.rect.x = 450
+            ch_goal1 += 1
 
 playres = sprite.Group()
 playres2 = sprite.Group()
 bolls = sprite.Group()
 
 player_1 = PLayr(50, 250, 'player_1.svg', 21, 120)
-player_2 = PLayr(850, 250, 'player_2.svg', 21, 120)
+player_2 = PLayr(820, 250, 'player_2.svg', 21, 120)
 
 playres.add(player_1)
 playres2.add(player_2)
@@ -119,24 +133,43 @@ while wars.game:
         elif keys_pressed[K_ESCAPE]:
             wars.game = False
         
-        elif e.type == pg.MOUSEBUTTONDOWN:
-            if e.button == pg.BUTTON_LEFT:
-                if play_rect.collidepoint(e.pos):
+        elif e.type == MOUSEBUTTONDOWN:
+            if e.button == BUTTON_LEFT:
+                if play_rect.collidepoint(e.pos) and wars.b == 0:
                     wars.begin = False
                     wars.play_game = True
+                    wars.b = 1
+                
+                elif reset_rect.collidepoint(e.pos) and wars.play_game == False:
+                    playres.empty()
+                    bolls.empty()
+
+                    playres.add(player_1)
+                    playres2.add(player_2)
+
+                    bolls.add(boll)
+                    wars.play_game = True
+                    ch_goal1 = 0
+                    ch_goal2 = 0
+                    print('sdf')
     
     if wars.begin == True:
         window.blit(play, (play_rect.x, play_rect.y))
 
     if wars.play_game == True:
+        goal1 = pg.font.SysFont('verbana', 50).render(str(ch_goal1), True, wars.ping)
+        goal2 = pg.font.SysFont('verbana', 50).render(str(ch_goal2), True, wars.gray)
+
         if sprite.groupcollide(bolls, playres, False, False):
             wars.vector_x = 3
 
         if sprite.groupcollide(bolls, playres2, False, False):
             wars.vector_x = -3
 
-        window.blit(wars._check, (0, 8))
-
+        window.blit(wars._check, (300, 8))
+        window.blit(goal1, (410, 13))
+        window.blit(goal2, (450, 13))
+        
         player_1.draw()
         player_1.vector_p1()
 
@@ -144,7 +177,17 @@ while wars.game:
         player_2.vector_p2()
 
         boll.draw()
-        bolls.update()
+        boll.update()
+    
+    if ch_goal1 == 3:
+        window.blit(wars.win_1, (280, 200))
+        window.blit(reset, (reset_rect.x, reset_rect.y))
+        wars.play_game = False
+
+    if ch_goal2 == 3:
+        window.blit(wars.win_2, (280, 200))
+        window.blit(reset, (reset_rect.x, reset_rect.y))
+        wars.play_game = False
 
     clock.tick(60)
     display.update()
